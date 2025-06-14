@@ -5,7 +5,8 @@
 ## Features
 
 - Finds the method containing a given line number in a Java file.
-- Prints the method's name, signature, start/end lines, and body.
+- Outputs method information in JSON format for easy parsing.
+- Provides method name, signature, start/end lines, and body.
 - Simple command-line interface.
 
 ## Prerequisites
@@ -59,27 +60,32 @@ mvn exec:java -Dexec.mainClass=MethodLocator -Dexec.args="src/main/java/MethodLo
 
 ## Example Output
 
-```
-Found method:
-Method Name: myMethod
-Start Line: 10
-End Line: 25
-Method Signature: public void myMethod(String arg)
-Method Body:
-public void myMethod(String arg) {
-    // method body
+When a method is found at the specified line:
+```json
+{
+  "found": true,
+  "methodName": "myMethod",
+  "startLine": 10,
+  "endLine": 25,
+  "methodSignature": "public void myMethod(String arg)",
+  "methodBody": "public void myMethod(String arg) {\n    // method body\n}"
 }
 ```
 
-If no method is found at the given line, you will see:
-```
-No method found at line <line-number>
+When no method is found at the given line:
+```json
+{
+  "found": false,
+  "message": "No method found at line 42"
+}
 ```
 
 ## Notes
 
+- The tool outputs results in JSON format for easy integration with other tools and scripts.
 - The tool requires the JavaParser library, which is managed via Maven.
 - Make sure your Java version matches the one specified in `pom.xml` (`24`).
+- JSON output includes proper escaping of special characters in strings.
 
 ## License
 

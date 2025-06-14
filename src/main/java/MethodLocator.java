@@ -1,8 +1,14 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Optional;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-public static void main(String[] args) throws FileNotFoundException {
+public class MethodLocator {
+    
+    public static void main(String[] args) throws FileNotFoundException {
     if (args.length != 2) {
         System.out.println("Usage: java MethodLocator <source-file> <line-number>");
         return;
@@ -22,13 +28,29 @@ public static void main(String[] args) throws FileNotFoundException {
 
     if (result.isPresent()) {
         MethodDeclaration method = result.get();
-        System.out.println("Found method:");
-        System.out.println("Method Name: " + method.getName());
-        System.out.println("Start Line: " + method.getRange().get().begin.line);
-        System.out.println("End Line: " + method.getRange().get().end.line);
-        System.out.println("Method Signature: " + method.getDeclarationAsString());
-        System.out.println("Method Body:\n" + method);
+        
+        // Create JSON output
+        System.out.println("{");
+        System.out.println("  \"found\": true,");
+        System.out.println("  \"methodName\": \"" + escapeJson(method.getName().asString()) + "\",");
+        System.out.println("  \"startLine\": " + method.getRange().get().begin.line + ",");
+        System.out.println("  \"endLine\": " + method.getRange().get().end.line + ",");
+        System.out.println("  \"methodSignature\": \"" + escapeJson(method.getDeclarationAsString()) + "\",");
+        System.out.println("  \"methodBody\": \"" + escapeJson(method.toString()) + "\"");
+        System.out.println("}");
     } else {
-        System.out.println("No method found at line " + lineNumber);
+        System.out.println("{");
+        System.out.println("  \"found\": false,");
+        System.out.println("  \"message\": \"No method found at line " + lineNumber + "\"");
+        System.out.println("}");
     }
+}
+
+private static String escapeJson(String str) {
+    return str.replace("\\", "\\\\")
+              .replace("\"", "\\\"")
+              .replace("\n", "\\n")
+              .replace("\r", "\\r")
+              .replace("\t", "\\t");
+}
 }
