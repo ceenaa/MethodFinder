@@ -27,7 +27,7 @@ public static void main(String[] args) throws FileNotFoundException {
         System.out.println("Start Line: " + method.getRange().get().begin.line);
         System.out.println("End Line: " + method.getRange().get().end.line);
         System.out.println("Method Signature: " + method.getDeclarationAsString());
-        System.out.println("Method Body:\n" + method.toString());
+        System.out.println("Method Body:\n" + method);
     } else {
         System.out.println("No method found at line " + lineNumber);
     }
